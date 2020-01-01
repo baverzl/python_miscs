@@ -9,4 +9,4 @@ print(LooseVersion(numpy.__version__) >= LooseVersion('1.18.0'))
 print(LooseVersion('1.0.0a'))
 
 print(StrictVersion('1.0.0'))
-print(StrictVersion('1.0.0a')) # Invalid format
+print(StrictVersion('1.0.0a'))  # Invalid format

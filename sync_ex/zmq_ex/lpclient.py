@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 """ Connecting to echo server
 """
 
@@ -24,44 +23,44 @@ sequence = 0
 retries_left = REQUEST_RETRIES
 
 while retries_left:
-    sequence += 1
+  sequence += 1
 
-    request = str(sequence).encode()
-    print('I: Sending (%s)' % request)
-    client.send(request)
+  request = str(sequence).encode()
+  print('I: Sending (%s)' % request)
+  client.send(request)
 
-    expect_reply = True
-    while expect_reply:
-        socks = dict(poll.poll(REQUEST_TIMEOUT))
-        if socks.get(client) == zmq.POLLIN:
-            reply = client.recv()
-            if not reply:
-                break
-            if int(reply) == sequence:
-                print("I: Server replied OK (%s)" % reply)
-                retries_left = REQUEST_RETRIES
-                expect_reply = False
-            else:
-                print("E: Malformed reply from server: %s" % reply)
-            
-        else:
-            print("W: No response from server, retrying...")
-            # Socket is confused. Close and remove it.
-            client.setsockopt(zmq.LINGER, 0)
-            client.close()
+  expect_reply = True
+  while expect_reply:
+    socks = dict(poll.poll(REQUEST_TIMEOUT))
+    if socks.get(client) == zmq.POLLIN:
+      reply = client.recv()
+      if not reply:
+        break
+      if int(reply) == sequence:
+        print("I: Server replied OK (%s)" % reply)
+        retries_left = REQUEST_RETRIES
+        expect_reply = False
+      else:
+        print("E: Malformed reply from server: %s" % reply)
 
-            poll.unregister(client)
-            retries_left -= 1
-            if retries_left == 0:
-                print("E: Server seems to be offline, abandoning")
-                break
-            
-            print("I: Reconnecting and sending (%s)" % request)
+    else:
+      print("W: No response from server, retrying...")
+      # Socket is confused. Close and remove it.
+      client.setsockopt(zmq.LINGER, 0)
+      client.close()
 
-            # Create new connection (retry)
-            client = context.socket(zmq.REQ)
-            client.connect(SERVER_ENDPOINT)
-            poll.register(client, zmq.POLLIN)
-            client.send(request)
+      poll.unregister(client)
+      retries_left -= 1
+      if retries_left == 0:
+        print("E: Server seems to be offline, abandoning")
+        break
+
+      print("I: Reconnecting and sending (%s)" % request)
+
+      # Create new connection (retry)
+      client = context.socket(zmq.REQ)
+      client.connect(SERVER_ENDPOINT)
+      poll.register(client, zmq.POLLIN)
+      client.send(request)
 
 context.term()

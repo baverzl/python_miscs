@@ -25,8 +25,11 @@
 
 # Weak Reference Objects
 import weakref
+
+
 class Object:
-    pass
+  pass
+
 
 o = Object()
 r = weakref.ref(o)
@@ -43,36 +46,39 @@ print(r())
 # r is a weak reference object
 o = r()
 if o is None:
-    # referent has been garbage collected
-    print('Object has been deallocated; can\'t frobnicate.')
+  # referent has been garbage collected
+  print('Object has been deallocated; can\'t frobnicate.')
 else:
-    print('Object is still live!')
-    # o.do_something_useful()
+  print('Object is still live!')
+  # o.do_something_useful()
+
 
 # This example shows how a subclass of ref can be used to store additional information about an object
 # and affect the value that's returned when the referent is accessed.
 class ExtendedRef(weakref.ref):
-    def __init__(self, ob, callback=None, **annotations):
-        super(ExtendedRef, self).__init__(ob, callback)
-        self.__counter = 0
-        for k, v in annotations.items():
-            setattr(self, k, v)
 
-    def __call__(self):
-        """Return a pair containing the referent and the number of
+  def __init__(self, ob, callback=None, **annotations):
+    super(ExtendedRef, self).__init__(ob, callback)
+    self.__counter = 0
+    for k, v in annotations.items():
+      setattr(self, k, v)
+
+  def __call__(self):
+    """Return a pair containing the referent and the number of
         times the reference has been called.
         """
-        ob = super(ExtendedRef, self).__call__()
-        if ob is not None:
-            self.__counter += 1
-            ob = (ob, self.__counter)
-        return ob
+    ob = super(ExtendedRef, self).__call__()
+    if ob is not None:
+      self.__counter += 1
+      ob = (ob, self.__counter)
+    return ob
+
 
 o = Object()
-r =ExtendedRef(o)
+r = ExtendedRef(o)
 for i in range(4):
-    o_tmp, count = r()
-    print(count)
+  o_tmp, count = r()
+  print(count)
 
 # Example
 # This simple example shows how an application can use object IDs to retrieve objects that it has seen
@@ -81,22 +87,25 @@ for i in range(4):
 
 _id2obj_dict = weakref.WeakValueDictionary()
 
+
 def remember(obj):
-    oid = id(obj)
-    _id2obj_dict[oid] = obj
-    return oid
+  oid = id(obj)
+  _id2obj_dict[oid] = obj
+  return oid
+
 
 def id2obj(oid):
-    return _id2obj_dict[oid]
+  return _id2obj_dict[oid]
 
 
 # Module destructor
 
 import sys
 
+
 def unloading_module():
-    # implicit reference to the module globals() from the function body
-    print('unloading...')
+  # implicit reference to the module globals() from the function body
+  print('unloading...')
+
 
 weakref.finalize(sys.modules[__name__], unloading_module)
-

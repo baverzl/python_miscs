@@ -1,4 +1,4 @@
-#!/usr/bin/env python3 
+#!/usr/bin/env python3
 
 from collections import Counter
 
@@ -6,7 +6,7 @@ words = "abcdaajasdkcajskldjklasdfjkl"
 
 counter = Counter()
 for c in words:
-	counter.update(c)
+  counter.update(c)
 
 for key, item in counter.items():
-	print(key, item)
+  print(key, item)

@@ -1,4 +1,4 @@
-#!/usr/bin/en python3 
+#!/usr/bin/en python3
 
 import functools
 

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from collections import namedtuple 
+from collections import namedtuple
 
 Account = namedtuple('Account', ['name', 'age', 'sex', 'id'])
 
